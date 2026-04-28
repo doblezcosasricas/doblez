@@ -1,0 +1,578 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Doble Z — Cosas ricas en frascos</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<style>
+  :root {
+    --cream: #F5F0E8;
+    --cream-dark: #EDE6D6;
+    --gold: #B8960C;
+    --gold-light: #D4AF37;
+    --olive: #4A4A2A;
+    --olive-dark: #2E2E1A;
+    --charcoal: #1C1C1C;
+    --warm-white: #FDFAF5;
+    --text-main: #1C1C1C;
+    --text-sub: #5A5040;
+    --text-muted: #8A7A60;
+    --border: rgba(184,150,12,0.2);
+    --border-strong: rgba(184,150,12,0.4);
+    --shadow: 0 4px 24px rgba(28,28,28,0.08);
+    --shadow-lg: 0 12px 48px rgba(28,28,28,0.14);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Jost', sans-serif;
+    background: var(--cream);
+    color: var(--text-main);
+    min-height: 100vh;
+  }
+
+  /* HERO */
+  .hero {
+    background: var(--charcoal);
+    padding: 3.5rem 2rem 2.5rem;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(ellipse at 20% 50%, rgba(184,150,12,0.08) 0%, transparent 60%),
+      radial-gradient(ellipse at 80% 30%, rgba(74,74,42,0.15) 0%, transparent 60%);
+  }
+  .hero-inner { position: relative; z-index: 1; }
+  .hero-tag {
+    font-family: 'Jost', sans-serif;
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    color: var(--gold-light);
+    margin-bottom: 1rem;
+  }
+  .hero-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(3rem, 8vw, 5rem);
+    font-weight: 600;
+    color: var(--warm-white);
+    line-height: 0.95;
+    margin-bottom: 0.5rem;
+    letter-spacing: -1px;
+  }
+  .hero-title span { color: var(--gold-light); font-style: italic; }
+  .hero-sub {
+    font-size: 13px;
+    font-weight: 300;
+    color: rgba(255,255,255,0.5);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-bottom: 2rem;
+  }
+  .hero-badges { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; }
+  .badge {
+    border: 1px solid rgba(184,150,12,0.35);
+    color: rgba(255,255,255,0.65);
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    padding: 5px 14px;
+    border-radius: 2px;
+  }
+
+  /* MAIN LAYOUT */
+  .main { max-width: 1100px; margin: 0 auto; padding: 2.5rem 1.5rem; }
+
+  /* FILTERS */
+  .filter-row {
+    display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 2rem;
+    border-bottom: 1px solid var(--border); padding-bottom: 1.5rem;
+  }
+  .cat-btn {
+    font-family: 'Jost', sans-serif;
+    background: transparent;
+    border: 1px solid var(--border-strong);
+    color: var(--text-sub);
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    padding: 7px 18px;
+    border-radius: 2px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .cat-btn:hover { border-color: var(--gold); color: var(--gold); }
+  .cat-btn.active { background: var(--charcoal); color: var(--gold-light); border-color: var(--charcoal); }
+
+  /* SECTION LABEL */
+  .section-label {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.6rem;
+    font-weight: 500;
+    color: var(--olive-dark);
+    margin-bottom: 1.5rem;
+    font-style: italic;
+  }
+
+  /* PRODUCT GRID */
+  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 1px; margin-bottom: 3rem; background: var(--border); border: 1px solid var(--border); }
+
+  .card {
+    background: var(--warm-white);
+    padding: 1.5rem 1.25rem 1.25rem;
+    transition: background 0.2s;
+    display: flex; flex-direction: column;
+  }
+  .card:hover { background: #FFFDF8; }
+
+  .card-emoji {
+    width: 52px; height: 52px;
+    margin-bottom: 1rem;
+    image-rendering: crisp-edges;
+  }
+  .card-name {
+    font-family: 'Jost', sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    line-height: 1.4;
+    margin-bottom: 4px;
+    color: var(--text-main);
+    flex: 1;
+  }
+  .card-desc {
+    font-size: 11px;
+    color: var(--text-muted);
+    letter-spacing: 0.5px;
+    margin-bottom: 12px;
+  }
+  .card-price {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.3rem;
+    font-weight: 600;
+    color: var(--olive-dark);
+    margin-bottom: 12px;
+  }
+  .btn-add {
+    font-family: 'Jost', sans-serif;
+    width: 100%;
+    background: var(--charcoal);
+    color: var(--gold-light);
+    border: none;
+    padding: 9px 0;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    cursor: pointer;
+    border-radius: 2px;
+    transition: background 0.2s;
+  }
+  .btn-add:hover { background: var(--olive-dark); }
+
+  /* CART */
+  .cart-section {
+    background: var(--warm-white);
+    border: 1px solid var(--border-strong);
+    padding: 2rem;
+    margin-bottom: 1.5rem;
+  }
+  .cart-head {
+    display: flex; justify-content: space-between; align-items: baseline;
+    margin-bottom: 1.25rem;
+    border-bottom: 1px solid var(--border); padding-bottom: 1rem;
+  }
+  .cart-head-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.4rem; font-weight: 500; font-style: italic;
+    color: var(--olive-dark);
+  }
+  .cart-head-count { font-size: 11px; color: var(--text-muted); letter-spacing: 1px; text-transform: uppercase; }
+  .cart-empty { font-size: 13px; color: var(--text-muted); text-align: center; padding: 1.5rem 0; letter-spacing: 0.5px; }
+  .cart-item {
+    display: flex; align-items: center; padding: 10px 0;
+    border-bottom: 1px solid var(--border); font-size: 13px;
+  }
+  .cart-item:last-child { border-bottom: none; }
+  .ci-name { flex: 1; color: var(--text-main); line-height: 1.4; }
+  .ci-qty { display: flex; align-items: center; gap: 10px; margin: 0 16px; }
+  .qty-btn {
+    background: var(--cream); border: 1px solid var(--border-strong);
+    width: 24px; height: 24px; cursor: pointer; font-size: 15px;
+    display: flex; align-items: center; justify-content: center;
+    color: var(--text-main); border-radius: 2px; transition: background 0.15s;
+  }
+  .qty-btn:hover { background: var(--cream-dark); }
+  .ci-price { font-family: 'Cormorant Garamond', serif; font-size: 1.1rem; font-weight: 600; min-width: 80px; text-align: right; color: var(--olive-dark); }
+  .cart-total-row {
+    display: flex; justify-content: space-between; align-items: baseline;
+    padding-top: 1rem; margin-top: 0.5rem;
+    border-top: 2px solid var(--charcoal);
+  }
+  .cart-total-label { font-size: 11px; font-weight: 600; letter-spacing: 2px; text-transform: uppercase; color: var(--text-sub); }
+  .cart-total-val { font-family: 'Cormorant Garamond', serif; font-size: 1.8rem; font-weight: 600; color: var(--olive-dark); }
+
+  /* WA BUTTON */
+  .btn-wa {
+    font-family: 'Jost', sans-serif;
+    width: 100%;
+    background: #128C7E;
+    color: white;
+    border: none;
+    padding: 16px 0;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center; gap: 10px;
+    transition: background 0.2s;
+    margin-bottom: 3rem;
+  }
+  .btn-wa:hover { background: #075E54; }
+  .btn-wa:disabled { background: #aaa; cursor: not-allowed; }
+
+  /* FOOTER */
+  .footer {
+    border-top: 1px solid var(--border);
+    padding: 2rem 0;
+    text-align: center;
+    font-size: 11px;
+    color: var(--text-muted);
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+  }
+
+  /* TOAST */
+  .toast {
+    position: fixed; bottom: 24px; right: 24px;
+    background: var(--charcoal); color: var(--gold-light);
+    padding: 10px 20px; font-size: 12px; letter-spacing: 1px;
+    opacity: 0; transition: opacity 0.3s; pointer-events: none; z-index: 999;
+    border-left: 3px solid var(--gold);
+  }
+  .toast.show { opacity: 1; }
+
+  /* QR MODAL */
+  .modal-overlay {
+    display: none; position: fixed; inset: 0;
+    background: rgba(28,28,28,0.7); z-index: 1000;
+    align-items: center; justify-content: center;
+    backdrop-filter: blur(4px);
+  }
+  .modal-overlay.open { display: flex; }
+  .modal {
+    background: var(--warm-white);
+    padding: 2.5rem;
+    max-width: 340px; width: 90%;
+    text-align: center;
+    position: relative;
+  }
+  .modal-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.5rem; font-weight: 500; font-style: italic;
+    color: var(--olive-dark); margin-bottom: 0.4rem;
+  }
+  .modal-sub { font-size: 11px; color: var(--text-muted); letter-spacing: 1px; text-transform: uppercase; margin-bottom: 1.5rem; }
+  #qrcode { display: flex; justify-content: center; margin-bottom: 1.5rem; }
+  .modal-url {
+    font-size: 11px; color: var(--text-sub); letter-spacing: 0.5px;
+    word-break: break-all; margin-bottom: 1.5rem;
+    padding: 10px; background: var(--cream); border: 1px solid var(--border);
+  }
+  .modal-close {
+    font-family: 'Jost', sans-serif;
+    background: var(--charcoal); color: var(--gold-light);
+    border: none; padding: 10px 32px;
+    font-size: 10px; font-weight: 600; letter-spacing: 2px; text-transform: uppercase;
+    cursor: pointer;
+  }
+
+  /* QR / SHARE BAR */
+  .share-bar {
+    display: flex; gap: 10px; margin-bottom: 2.5rem; flex-wrap: wrap;
+  }
+  .share-btn {
+    font-family: 'Jost', sans-serif;
+    display: flex; align-items: center; gap: 8px;
+    background: var(--warm-white); border: 1px solid var(--border-strong);
+    color: var(--text-sub); font-size: 10px; font-weight: 600; letter-spacing: 1.5px;
+    text-transform: uppercase; padding: 10px 20px; cursor: pointer;
+    border-radius: 2px; transition: all 0.2s;
+  }
+  .share-btn:hover { background: var(--charcoal); color: var(--gold-light); border-color: var(--charcoal); }
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="hero-inner">
+    <div class="hero-tag">Mar del Plata · Argentina</div>
+    <h1 class="hero-title">Doble <span>Z</span></h1>
+    <p class="hero-sub">Cosas ricas en frascos</p>
+    <div class="hero-badges">
+      <span class="badge">Mermeladas</span>
+      <span class="badge">Aceites</span>
+      <span class="badge">Pastas</span>
+      <span class="badge">Aceitunas</span>
+      <span class="badge">Escabeches</span>
+    </div>
+  </div>
+</header>
+
+<main class="main">
+
+  <!-- SHARE BAR -->
+  <div class="share-bar">
+    <button class="share-btn" onclick="copyLink()">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 007.54.54l3-3a5 5 0 00-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 00-7.54-.54l-3 3a5 5 0 007.07 7.07l1.71-1.71"/></svg>
+      Copiar enlace
+    </button>
+    <button class="share-btn" onclick="showQR()">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="6" y="6" width="1" height="1" fill="currentColor" stroke="none"/><rect x="17" y="6" width="1" height="1" fill="currentColor" stroke="none"/><rect x="6" y="17" width="1" height="1" fill="currentColor" stroke="none"/><line x1="14" y1="14" x2="17" y2="14"/><line x1="17" y1="14" x2="17" y2="17"/><line x1="14" y1="17" x2="17" y2="17"/></svg>
+      Ver código QR
+    </button>
+  </div>
+
+  <!-- FILTERS -->
+  <div class="filter-row" id="cats">
+    <button class="cat-btn active" onclick="filterCat('todas',event)">Todos</button>
+    <button class="cat-btn" onclick="filterCat('mermeladas',event)">Mermeladas</button>
+    <button class="cat-btn" onclick="filterCat('aceites',event)">Aceites</button>
+    <button class="cat-btn" onclick="filterCat('pastas',event)">Pastas</button>
+    <button class="cat-btn" onclick="filterCat('aceitunas',event)">Aceitunas</button>
+    <button class="cat-btn" onclick="filterCat('escabeches',event)">Escabeches</button>
+  </div>
+
+  <div class="section-label" id="section-label">Toda la línea</div>
+  <div class="grid" id="grid"></div>
+
+  <!-- CART -->
+  <div class="cart-section">
+    <div class="cart-head">
+      <span class="cart-head-title">Su pedido</span>
+      <span class="cart-head-count" id="cart-count"></span>
+    </div>
+    <div id="cart-items"><div class="cart-empty">Agregue productos para comenzar su pedido</div></div>
+    <div id="cart-total-row" style="display:none;" class="cart-total-row">
+      <span class="cart-total-label">Total</span>
+      <span class="cart-total-val" id="cart-total">$0</span>
+    </div>
+  </div>
+
+  <button class="btn-wa" id="wa-btn" onclick="sendWA()" disabled>
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+    Enviar pedido por WhatsApp
+  </button>
+
+  <footer class="footer">
+    Doble Z — Cosas ricas en frascos &nbsp;·&nbsp; Mar del Plata &nbsp;·&nbsp; Pedidos por WhatsApp
+  </footer>
+</main>
+
+<!-- QR MODAL -->
+<div class="modal-overlay" id="modal" onclick="if(event.target===this)closeQR()">
+  <div class="modal">
+    <div class="modal-title">Código QR</div>
+    <div class="modal-sub">Escaneá para abrir la tienda</div>
+    <div id="qrcode"></div>
+    <div class="modal-url" id="modal-url"></div>
+    <button class="modal-close" onclick="closeQR()">Cerrar</button>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const WA = '5492233473456';
+
+// Apple-style emoji via Twemoji CDN (Twitter emoji = same as Apple on most platforms, high quality PNG)
+// Using CDN for high quality emoji images
+const emojiImg = (code, alt) =>
+  `<img class="card-emoji" src="https://cdnjs.cloudflare.com/ajax/libs/twemoji/14.0.2/72x72/${code}.png" alt="${alt}" onerror="this.style.display='none'">`;
+
+const productos = [
+  // MERMELADAS
+  {id:1,  cat:'mermeladas', emo:'1f96d', alt:'mango', nombre:'Mermelada Mango, Frutilla y Naranja', desc:'230 grs · Sin conservantes', precio:6300},
+  {id:2,  cat:'mermeladas', emo:'1f96d', alt:'mango', nombre:'Mermelada Mango, Pera y Maracuyá', desc:'230 grs · Sin conservantes', precio:4800},
+  {id:3,  cat:'mermeladas', emo:'1fad0', alt:'frambuesa', nombre:'Mermelada de Frambuesa', desc:'230 grs · Sin conservantes', precio:7500},
+  {id:4,  cat:'mermeladas', emo:'1f353', alt:'frutilla', nombre:'Mermelada Frutilla y Frambuesa', desc:'230 grs · Sin conservantes', precio:6300},
+  {id:5,  cat:'mermeladas', emo:'1fad0', alt:'arandanos', nombre:'Mermelada de Arándanos', desc:'230 grs · Sin conservantes', precio:6300},
+  {id:6,  cat:'mermeladas', emo:'1f353', alt:'frutilla', nombre:'Mermelada de Frutilla', desc:'230 grs · Sin conservantes', precio:4800},
+  {id:7,  cat:'mermeladas', emo:'1f347', alt:'uva', nombre:'Mermelada Frutos del Bosque', desc:'230 grs · Sin conservantes', precio:6300},
+  {id:8,  cat:'mermeladas', emo:'1f350', alt:'pera', nombre:'Mermelada Pera y Limón', desc:'230 grs · Sin conservantes', precio:4800},
+  {id:9,  cat:'mermeladas', emo:'1f34a', alt:'naranja', nombre:'Mermelada Naranja con Chips de Chocolate', desc:'230 grs · Sin conservantes', precio:4800},
+  {id:10, cat:'mermeladas', emo:'1f353', alt:'frutilla', nombre:'Mermelada Frutilla y Kiwi', desc:'230 grs · Sin conservantes', precio:4800},
+  {id:11, cat:'mermeladas', emo:'1f34e', alt:'manzana', nombre:'Mermelada Manzana a la Canela', desc:'230 grs · Sin conservantes', precio:4800},
+  {id:12, cat:'mermeladas', emo:'1f34f', alt:'manzana verde', nombre:'Mermelada Manzana Verde y Kiwi', desc:'230 grs · Sin conservantes', precio:4800},
+  // ACEITES
+  {id:13, cat:'aceites', emo:'1fad2', alt:'aceituna', nombre:'Aceite de Oliva', desc:'500 ml · Vidrio', precio:8550},
+  {id:14, cat:'aceites', emo:'1f9c4', alt:'ajo', nombre:'Aceite de Ajo', desc:'500 ml · Vidrio', precio:7000},
+  {id:15, cat:'aceites', emo:'1f347', alt:'uva', nombre:'Aceite de Uva', desc:'500 ml · Vidrio', precio:8000},
+  {id:16, cat:'aceites', emo:'1f376', alt:'botella', nombre:'Aceto Balsámico', desc:'500 ml · Vidrio', precio:4800},
+  {id:17, cat:'aceites', emo:'1f9c4', alt:'ajo', nombre:'Aceite de Oliva con Ajo y Albahaca', desc:'500 ml · Saborizado', precio:9800},
+  {id:18, cat:'aceites', emo:'1f345', alt:'tomate', nombre:'Aceite de Oliva con Albahaca y Tomate', desc:'500 ml · Saborizado', precio:9800},
+  {id:19, cat:'aceites', emo:'1f33f', alt:'romero', nombre:'Aceite de Oliva con Romero', desc:'500 ml · Saborizado', precio:9800},
+  {id:20, cat:'aceites', emo:'1f9c4', alt:'ajo', nombre:'Aceite de Oliva con Ajo', desc:'500 ml · Saborizado', precio:9800},
+  // PASTAS
+  {id:21, cat:'pastas', emo:'1fad2', alt:'aceituna', nombre:'Pasta de Aceituna Verde', desc:'200 grs · Artesanal', precio:3930},
+  {id:22, cat:'pastas', emo:'1fad2', alt:'aceituna', nombre:'Pasta de Aceituna Negra', desc:'200 grs · Artesanal', precio:3930},
+  {id:23, cat:'pastas', emo:'1f955', alt:'zanahoria', nombre:'Pasta de Zanahoria', desc:'200 grs · Artesanal', precio:3150},
+  {id:24, cat:'pastas', emo:'1fad8', alt:'garbanzo', nombre:'Pasta de Garbanzos', desc:'200 grs · Artesanal', precio:3800},
+  {id:25, cat:'pastas', emo:'1f534', alt:'remolacha', nombre:'Pasta de Remolacha', desc:'200 grs · Artesanal', precio:3150},
+  {id:26, cat:'pastas', emo:'1f346', alt:'berenjena', nombre:'Pasta de Berenjena', desc:'200 grs · Artesanal', precio:3150},
+  {id:27, cat:'pastas', emo:'1f9c5', alt:'cebolla', nombre:'Cebolla con Morrón Ahumado', desc:'200 grs · Artesanal', precio:3500},
+  {id:28, cat:'pastas', emo:'1f9c5', alt:'cebolla', nombre:'Pasta de Cebolla Caramelizada', desc:'200 grs · Artesanal', precio:3600},
+  // ACEITUNAS
+  {id:29, cat:'aceitunas', emo:'1fad2', alt:'aceituna', nombre:'Aceitunas Verdes Naturales', desc:'500 grs', precio:4350},
+  {id:30, cat:'aceitunas', emo:'1fad2', alt:'aceituna', nombre:'Aceitunas Griegas', desc:'244 grs netos', precio:4800},
+  {id:31, cat:'aceitunas', emo:'1f9c0', alt:'queso', nombre:'Aceitunas Rellenas con Queso', desc:'325 grs netos', precio:7350},
+  {id:32, cat:'aceitunas', emo:'1f336', alt:'morron', nombre:'Aceitunas Rellenas con Morrón al Horno', desc:'330 grs netos', precio:7350},
+  {id:33, cat:'aceitunas', emo:'1f377', alt:'vino', nombre:'Aceitunas Caramelizadas al Malbec', desc:'Artesanal', precio:4650},
+  // ESCABECHES
+  {id:34, cat:'escabeches', emo:'1f346', alt:'berenjena', nombre:'Berenjenas en Escabeche', desc:'450 grs', precio:4500},
+  {id:35, cat:'escabeches', emo:'1f33c', alt:'alcaucil', nombre:'Escabeche de Alcaucil', desc:'450 grs', precio:4800},
+];
+
+let carrito = {};
+let catActual = 'todas';
+
+const labels = {
+  todas:'Toda la línea',
+  mermeladas:'Mermeladas — Pura fruta · Sin conservantes',
+  aceites:'Aceites & Aceto — 500 ml en vidrio',
+  pastas:'Pastas & Delicatessen — 100% naturales',
+  aceitunas:'Aceitunas — Artesanales',
+  escabeches:'Escabeches — Hechos como en casa',
+};
+
+function filterCat(cat, e) {
+  catActual = cat;
+  document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'));
+  e.target.classList.add('active');
+  document.getElementById('section-label').textContent = labels[cat];
+  renderGrid();
+}
+
+function renderGrid() {
+  const list = catActual === 'todas' ? productos : productos.filter(p => p.cat === catActual);
+  document.getElementById('grid').innerHTML = list.map(p => `
+    <div class="card">
+      ${emojiImg(p.emo, p.alt)}
+      <div class="card-name">${p.nombre}</div>
+      <div class="card-desc">${p.desc}</div>
+      <div class="card-price">$${p.precio.toLocaleString('es-AR')}</div>
+      <button class="btn-add" onclick="addCart(${p.id})">Agregar al pedido</button>
+    </div>
+  `).join('');
+}
+
+function addCart(id) {
+  carrito[id] = (carrito[id] || 0) + 1;
+  renderCart();
+  showToast('Producto agregado');
+}
+
+function changeQty(id, d) {
+  carrito[id] = (carrito[id] || 0) + d;
+  if (carrito[id] <= 0) delete carrito[id];
+  renderCart();
+}
+
+function renderCart() {
+  const ids = Object.keys(carrito);
+  const el = document.getElementById('cart-items');
+  const tr = document.getElementById('cart-total-row');
+  const cc = document.getElementById('cart-count');
+  const wb = document.getElementById('wa-btn');
+
+  if (!ids.length) {
+    el.innerHTML = '<div class="cart-empty">Agregue productos para comenzar su pedido</div>';
+    tr.style.display='none'; cc.textContent=''; wb.disabled=true; return;
+  }
+
+  let total=0, qty=0;
+  el.innerHTML = ids.map(id => {
+    const p = productos.find(x=>x.id==id);
+    const sub = p.precio * carrito[id];
+    total += sub; qty += carrito[id];
+    return `<div class="cart-item">
+      <span class="ci-name">${p.nombre}</span>
+      <div class="ci-qty">
+        <button class="qty-btn" onclick="changeQty(${id},-1)">−</button>
+        <span>${carrito[id]}</span>
+        <button class="qty-btn" onclick="changeQty(${id},1)">+</button>
+      </div>
+      <span class="ci-price">$${sub.toLocaleString('es-AR')}</span>
+    </div>`;
+  }).join('');
+
+  document.getElementById('cart-total').textContent = '$'+total.toLocaleString('es-AR');
+  tr.style.display='flex';
+  cc.textContent = qty+' producto'+(qty!==1?'s':'');
+  wb.disabled=false;
+}
+
+function sendWA() {
+  const ids = Object.keys(carrito);
+  if(!ids.length) return;
+  let msg='¡Hola Doble Z! Quiero realizar el siguiente pedido:%0A%0A';
+  let total=0;
+  ids.forEach(id=>{
+    const p=productos.find(x=>x.id==id);
+    const sub=p.precio*carrito[id];
+    total+=sub;
+    msg+=`• ${p.nombre} x${carrito[id]} — $${sub.toLocaleString('es-AR')}%0A`;
+  });
+  msg+=`%0A*Total: $${total.toLocaleString('es-AR')}*%0A%0A¡Muchas gracias!`;
+  window.open(`https://wa.me/${WA}?text=${msg}`,'_blank');
+}
+
+function showToast(m) {
+  const t=document.getElementById('toast');
+  t.textContent=m; t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),2000);
+}
+
+function copyLink() {
+  const url = window.location.href;
+  navigator.clipboard.writeText(url).then(()=>showToast('¡Enlace copiado!')).catch(()=>{
+    const tmp=document.createElement('input');
+    tmp.value=url; document.body.appendChild(tmp);
+    tmp.select(); document.execCommand('copy');
+    document.body.removeChild(tmp);
+    showToast('¡Enlace copiado!');
+  });
+}
+
+let qrGenerated = false;
+function showQR() {
+  const url = window.location.href;
+  document.getElementById('modal-url').textContent = url;
+  if(!qrGenerated) {
+    new QRCode(document.getElementById('qrcode'), {
+      text: url, width:200, height:200,
+      colorDark:'#1C1C1C', colorLight:'#FDFAF5',
+      correctLevel: QRCode.CorrectLevel.H
+    });
+    qrGenerated=true;
+  }
+  document.getElementById('modal').classList.add('open');
+}
+function closeQR() { document.getElementById('modal').classList.remove('open'); }
+
+renderGrid();
+</script>
+</body>
+</html>
